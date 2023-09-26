@@ -23,16 +23,21 @@ include(SYST_DIR.'/lkLinks.php');
 include(SYST_DIR.'/db.php');
 $db = new SafeMySql;
 
-$memcache = new Memcached();
-$memcache->addServer('localhost', 11211);
+$m = new Memcached();
+$m->addServer('localhost', 11211);
 
 //Базовый модуль
 include(SYST_DIR.'/base.php');
 
 //Подключение модулей
-include(SYST_DIR.'/parseMessage.php');
 include(SYST_DIR.'/lkModule.php');
+include(SYST_DIR.'/parseMessage.php');
+include(SYST_DIR.'/parseEvent.php');
 
+
+date_default_timezone_set( 'Europe/Moscow' );
+
+$server_time = intval($_SERVER['REQUEST_TIME']);
 
 switch ($event['type']) {
     
@@ -57,6 +62,21 @@ switch ($event['type']) {
     
         parseMessage($peer_id, $message);
     
+    break;
+    
+    case CALLBACK_API_EVENT_MESSAGE_EVENT:
+        
+        $message = $event['object'];
+        $peer_id = $message['peer_id'] ?: $message['user_id'];
+        
+        $user_dir = ROOT_DIR.'/db/'.$peer_id.'/';
+        if(is_dir($user_dir)){
+            $check_ping_verbose = fopen($user_dir .'ping.txt', 'w');
+            $cookie_file        = $user_dir . 'cookie.txt';
+        }
+        
+        parseEvemt($peer_id, $message);
+        
     break;
     
     //Незнакомец хочет поесть кукурузку

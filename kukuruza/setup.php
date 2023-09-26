@@ -9,6 +9,7 @@ define('VK_API_SECRET', ''); //csrf-токен
 
 define('CALLBACK_API_EVENT_CONFIRMATION', 'confirmation'); // Тип события о подтверждении сервера
 define('CALLBACK_API_EVENT_MESSAGE_NEW', 'message_new'); // Тип события о новом сообщении
+define('CALLBACK_API_EVENT_MESSAGE_EVENT', 'message_event');
 
 define('VK_API_VERSION', '5.89'); // Используемая версия API
 

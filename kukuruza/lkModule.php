@@ -4,7 +4,7 @@ $headers = [
     
 	'cache-control: max-age=0',
 	'upgrade-insecure-requests: 1',
-	'user-agent: Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36 etuBot/1',
+	'user-agent: Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.0.0 Safari/537.36',
 	'sec-fetch-user: ?1',
 	'accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
 	'x-compress: null',
@@ -26,12 +26,10 @@ function fetchDataGet($url) {
     curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file);
     curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,0);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,0);
-    curl_setopt($ch, CURLOPT_VERBOSE, TRUE);
     curl_setopt($ch, CURLOPT_VERBOSE, 1);
     curl_setopt($ch, CURLOPT_DNS_USE_GLOBAL_CACHE, false);
     curl_setopt($ch, CURLOPT_STDERR, $check_ping_verbose);
@@ -49,12 +47,10 @@ function fetchDataPost($url, $opts) {
     curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file);
     curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file);
     curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 0);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,0);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,0);
-    curl_setopt($ch, CURLOPT_VERBOSE, TRUE);
     curl_setopt($ch, CURLOPT_VERBOSE, 1);
     curl_setopt($ch, CURLOPT_DNS_USE_GLOBAL_CACHE, false);
     curl_setopt($ch, CURLOPT_STDERR, $check_ping_verbose);
@@ -88,12 +84,73 @@ function loginLk($email, $passwd) {
     
 }
 
-function getUserInfo($check_ping_verbose, $cookie_file) {
+function loginDigit($params, $client_id) {
     
-    $url = 'https://lk.etu.ru/api/profile/current';
+    global $lkLink, $headers, $check_ping_verbose, $cookie_file, $peer_id, $user_dir;
     
-    $ping = fetchDataGet($url);
+    //$params = '?client_id=29&redirect_uri=https%3A%2F%2Fdigital.etu.ru%2Fattendance%2Fapi%2Fauth%2Fredirect&response_type=code';
     
-    printGotJson($ping);
+    $url = 'https://lk.etu.ru/oauth/authorize'.$params;
+    
+    $result = fetchDataGet($url);
+    
+    file_put_contents($user_dir.'debug.txt', $result);
+    //echo $result;
+    
+    $_token = explode('"', explode('name="_token" value="', $result)[1])[0];
+    $auth_token = explode('"', explode('name="auth_token" value="', $result)[1])[0];
+    
+    //sendMessage($peer_id, $result ? 1 : 0);
+    
+    //$client_id = 29;
+    
+    //echo $_token;
+    $opts = [
+        'state' => '',
+        'auth_token'    => $auth_token,
+        '_token'   => $_token,
+        'client_id' => $client_id,
+    ];
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($opts, '', '&'));
+    curl_setopt($ch, CURLOPT_COOKIEFILE, $cookie_file);
+    curl_setopt($ch, CURLOPT_COOKIEJAR, $cookie_file);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST,0);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER,0);
+    curl_setopt($ch, CURLOPT_VERBOSE, 1);
+    curl_setopt($ch, CURLOPT_DNS_USE_GLOBAL_CACHE, false);
+    curl_setopt($ch, CURLOPT_STDERR, $check_ping_verbose);
+    $ping = curl_exec($ch);
+    curl_close($ch);
+    
+    return $ping;
+    
+}
 
+function loginToDigitSrvc($params, $cli_id, $peer_id) {
+    
+    global $digAttLink;
+    
+    $pingAtt = json_decode(fetchDataGet($digAttLink['check-in']), true);
+                        
+    if(isset($pingAtt['message']) && $pingAtt['message'] == 'Недостаточно прав') {
+
+        loginDigit($params, $cli_id);
+
+        $pingAtt = json_decode(fetchDataGet($digAttLink['check-in']), true);
+                                
+        if(isset($pingAtt['message']) && $pingAtt['message'] == 'Недостаточно прав') {
+            sendWKeybAlias($peer_id, $l['auth_msg']['srve'], 'auth_btm', 72821);
+            echo 'ok';
+            die();
+        }
+    
+    }
+    
 }

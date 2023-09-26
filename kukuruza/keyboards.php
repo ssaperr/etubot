@@ -12,7 +12,7 @@ $k = [
                     "action" => [
                         "type" => "text",
                         "payload" => "{\"button\": \"1\"}",
-                        "label" => "Обо мне"
+                        "label" => "Команды"
                     ],
                 ],
                 [ //1 кнопка
@@ -21,6 +21,16 @@ $k = [
                         "type" => "text",
                         "payload" => "{\"button\": \"2\"}",
                         "label" => "Обо мне"
+                    ],
+                ],
+            ],
+            [
+                [ //В начало
+                    "color" => "primary",
+                    "action" => [
+                        "type" => "text",
+                        "payload" => "{\"button\": \"1\"}",
+                        "label" => "Посещаемость"
                     ],
                 ],
             ],
@@ -40,7 +50,7 @@ $k = [
         "inline" => true,
         "buttons" => [
             [
-                [ //Авторизоваться под инлайн
+                [
                     "color" => "primary",
                     "action" => [
                         "type" => "text",
@@ -61,6 +71,116 @@ $k = [
                         "type" => "text",
                         "payload" => "{\"button\": \"1\"}",
                         "label" => "Авторизация"
+                    ],
+                ],
+            ],
+        ],
+    ]),
+    'start' => json_encode([
+        "one_time" => false,
+        "buttons" => [
+            [
+                [ //В начало
+                    "color" => "secondary",
+                    "action" => [
+                        "type" => "text",
+                        "payload" => "{\"button\": \"1\"}",
+                        "label" => "Начало"
+                    ],
+                ],
+            ],
+        ],
+    ]),
+    'att_aa_off' => json_encode([
+        "one_time" => false,
+        "buttons" => [
+            [
+                [ //В начало
+                    "color" => "primary",
+                    "action" => [
+                        "type" => "text",
+                        "payload" => "{\"button\": \"1\"}",
+                        "label" => "Доступные предметы"
+                    ],
+                ],
+            ],
+            [
+                [ //В начало
+                    "color" => "secondary",
+                    "action" => [
+                        "type" => "text",
+                        "payload" => "{\"button\": \"1\"}",
+                        "label" => "Автоматически отмечать на всех предметах"
+                    ],
+                ],
+            ],
+            [
+                [ //В начало
+                    "color" => "secondary",
+                    "action" => [
+                        "type" => "text",
+                        "payload" => "{\"button\": \"1\"}",
+                        "label" => "Начало"
+                    ],
+                ],
+            ],
+        ],
+    ]),
+    'att_aa_on' => json_encode([
+        "one_time" => false,
+        "buttons" => [
+            [
+                [ //В начало
+                    "color" => "primary",
+                    "action" => [
+                        "type" => "text",
+                        "payload" => "{\"button\": \"1\"}",
+                        "label" => "Доступные предметы"
+                    ],
+                ],
+            ],
+            [
+                [ //В начало
+                    "color" => "secondary",
+                    "action" => [
+                        "type" => "text",
+                        "payload" => "{\"button\": \"1\"}",
+                        "label" => "Не отмечать автоматически на парах"
+                    ],
+                ],
+            ],
+            [
+                [ //В начало
+                    "color" => "secondary",
+                    "action" => [
+                        "type" => "text",
+                        "payload" => "{\"button\": \"1\"}",
+                        "label" => "Начало"
+                    ],
+                ],
+            ],
+        ],
+    ]),
+    'att_n_start' => json_encode([
+        "one_time" => false,
+        "buttons" => [
+            [
+                [ //В начало
+                    "color" => "primary",
+                    "action" => [
+                        "type" => "text",
+                        "payload" => "{\"button\": \"1\"}",
+                        "label" => "Посещаемость"
+                    ],
+                ],
+            ],
+            [
+                [ //В начало
+                    "color" => "secondary",
+                    "action" => [
+                        "type" => "text",
+                        "payload" => "{\"button\": \"1\"}",
+                        "label" => "Начало"
                     ],
                 ],
             ],
